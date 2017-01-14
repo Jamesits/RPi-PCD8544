@@ -58,13 +58,14 @@ void show_line(int argc, char **argv) {
 
 int main (int argc, char **argv)
 {
+    bool try_command_succ=false;
+    if (!argv[1]) goto quit;
   // check wiringPi setup
   if (wiringPiSetup() == -1)
   {
-	printf("FATAL: wiringPi init failed\n");
-    exit(1);
+	fprintf(stderr, "FATAL: wiringPi init failed\n");
+    goto quit;
   }
-  bool try_command_succ=false;
   // init and clear lcd
   LCDInit(_sclk, _din, _dc, _cs, _rst, contrast);
   LCDloadbuf(BUFFER_FILE);
@@ -83,6 +84,7 @@ int main (int argc, char **argv)
   //  digitalWrite(pin, 0);
   //  delay(250);
   //}
+quit:
   if (!try_command_succ){
       print_help();
       return -1;
