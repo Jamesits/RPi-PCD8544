@@ -22,7 +22,7 @@
 	 LCD5 - D/C    P13 - GPIO2
 	 LCD6 - CS     P15 - GPIO3
 	 LCD7 - RST    P16 - GPIO4
-	 LCD8 - LED    P01 - 3.3V 
+	 LCD8 - LED    P01 - 3.3V
 
  References  :
  http://www.arduino.cc/playground/Code/PCD8544
@@ -350,7 +350,7 @@ const uint8_t pi_logo [] = {
 0x03, 0x03, 0x07, 0x07, 0x0F, 0x1F, 0x1F, 0x3F, 0x3B, 0x71, 0x60, 0x60, 0x60, 0x60, 0x60, 0x71,   // 0x01D0 (464) pixels
 0x3B, 0x1F, 0x0F, 0x0F, 0x0F, 0x07, 0x03, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // 0x01E0 (480) pixels
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // 0x01F0 (496) pixels
-0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
 // reduces how much is refreshed, which speeds it up!
@@ -820,7 +820,7 @@ void LCDclear(void) {
 	cursor_y = cursor_x = 0;
 }
 
-// bitbang serial shift out on select GPIO pin. Data rate is defined by CPU clk speed and CLKCONST_2. 
+// bitbang serial shift out on select GPIO pin. Data rate is defined by CPU clk speed and CLKCONST_2.
 // Calibrate these value for your need on target platform.
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val)
 {
@@ -850,4 +850,20 @@ void _delay_ms(uint32_t t)
 			nCount--;
 		t--;
 	}
+}
+
+void LCDsavebuf(char *location)
+{
+	FILE *f = fopen(location, "wb");
+	if (!f) return;
+	fwrite(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
+	fclose(f);
+}
+
+void LCDloadbuf(char *location)
+{
+	FILE *f = fopen(location, "rb");
+	if (!f) return;
+	fread(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
+	fclose(f);
 }

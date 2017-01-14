@@ -16,6 +16,8 @@ int _cs = 3;
 //may be need modify to fit your screen!  normal: 30- 90 ,default is:45 !!!maybe modify this value!
 int contrast = 45;
 
+#define BUFFER_FILE "/tmp/pcd8544_buffer"
+
 void print_help()
 {
     puts("PCD8544 Command Line Utility");
@@ -63,12 +65,14 @@ int main (int argc, char **argv)
 
   // init and clear lcd
   LCDInit(_sclk, _din, _dc, _cs, _rst, contrast);
+  LCDloadbuf(BUFFER_FILE);
 
   TRY_COMMAND("logo", 0, show_logo);
   TRY_COMMAND("clear", 0, clear);
   TRY_COMMAND("string", 3, show_string);
   TRY_COMMAND("line", 4, show_line);
 
+  LCDsavebuf(BUFFER_FILE);
     //for (;;){
   //  printf("LED On\n");
   //  digitalWrite(pin, 1);
