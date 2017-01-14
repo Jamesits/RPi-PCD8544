@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Building LCD program..."
-cc -o lcd main.c PCD8544.c  -L/usr/local/lib -lwiringPi
+cc -o lcd main.c PCD8544.c  -L/usr/local/lib -lwiringPi -lpthread
 
 echo "Installing..."
 cp lcd /usr/local/bin
