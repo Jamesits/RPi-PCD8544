@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "PCD8544.h"
 
 // pin setup
@@ -52,7 +53,8 @@ void show_line(int argc, char **argv) {
 }
 
 #define TRY_COMMAND(cmdstring, argnum, func) \
-    if (argc >= (argnum) + 1 && !strcmp((cmdstring), argv[1])) { (func)(argc - 2, argv + 2); return(0); }
+    if (!try_command_succ && argc >= (argnum) + 1 && !strcmp((cmdstring), argv[1])) \
+        { (func)(argc - 2, argv + 2); try_command_succ=true; }
 
 int main (int argc, char **argv)
 {
@@ -62,7 +64,7 @@ int main (int argc, char **argv)
 	printf("FATAL: wiringPi init failed\n");
     exit(1);
   }
-
+  bool try_command_succ=false;
   // init and clear lcd
   LCDInit(_sclk, _din, _dc, _cs, _rst, contrast);
   LCDloadbuf(BUFFER_FILE);
@@ -81,6 +83,10 @@ int main (int argc, char **argv)
   //  digitalWrite(pin, 0);
   //  delay(250);
   //}
-  print_help();
-  return -1;
+  if (!try_command_succ){
+      print_help();
+      return -1;
+  } else {
+      return 0;
+  }
 }

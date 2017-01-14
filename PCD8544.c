@@ -855,16 +855,24 @@ void _delay_ms(uint32_t t)
 
 void LCDsavebuf(char *location)
 {
-	FILE *f = fopen(location, "wb");
-	if (!f) return;
-	fwrite(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
-	fclose(f);
+        FILE *f = fopen(location, "wb");
+        if (!f) {
+                fprintf(stderr, "Warning: unable to save to buffer file\n");
+                perror("lcd");
+                return;
+        }
+        fwrite(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
+        fclose(f);
 }
 
 void LCDloadbuf(char *location)
 {
-	FILE *f = fopen(location, "rb");
-	if (!f) return;
-	fread(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
-	fclose(f);
+        FILE *f = fopen(location, "rb");
+        if (!f) {
+                fprintf(stderr, "Warning: unable to load from buffer file\n");
+                perror("lcd");
+                return;
+        }
+        fread(pcd8544_buffer, sizeof(uint8_t), LCDWIDTH * LCDHEIGHT / 8, f);
+        fclose(f);
 }
